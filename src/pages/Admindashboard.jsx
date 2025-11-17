@@ -6,22 +6,29 @@ import {
   useChangeRoleMutation,
 } from "../api/userApi";
 
+import UserTable from "../components/admin/UserTable";
+import CreateUserModal from "../components/admin/CreateUserModal";
+
 const Dashboard = () => {
   const { data: users = [], refetch } = useGetUsersQuery();
+
   const [createUser, { isLoading: isCreating }] = useCreateUserMutation();
   const [toggleActive] = useToggleActiveMutation();
   const [changeRole] = useChangeRoleMutation();
-  const [form, setForm] = useState({
+
+  const [openModal, setOpenModal] = useState(false);
+
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     role: "rm",
   });
 
-  const handleCreate = async (e) => {
-    e.preventDefault();
-    await createUser(form);
-    setForm({ name: "", email: "", password: "", role: "rm" });
+  const handleCreate = async () => {
+    await createUser(formData);
+    setFormData({ name: "", email: "", password: "", role: "rm" });
+    setOpenModal(false);
     refetch();
   };
 
@@ -36,151 +43,45 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-6xl mx-auto bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-3xl font-bold text-gray-600 mb-6 text-center">
-          👑 Admin Dashboard
-        </h2>
+    <div className="min-h-screen w-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300 p-4 sm:p-8 font-sans">
+      {/* <div className=" bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 sm:p-8 border border-gray-200 dark:border-gray-700 transition-colors duration-300"> */}
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 dark:text-gray-100 mb-4 sm:mb-0 tracking-wide">
+            🏦 Bank Admin Control Panel
+          </h2>
 
-        {/* Create User Form */}
-        <form
-          onSubmit={handleCreate}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8"
-        >
-          <input
-            type="text"
-            placeholder="Name"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="border text-gray-600 border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-            required
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="border text-gray-600 border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="border text-gray-600 border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-            required
-          />
-          <select
-            value={form.role}
-            onChange={(e) => setForm({ ...form, role: e.target.value })}
-            className="border text-gray-600 border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-          >
-            <option value="user">Relationship manager</option>
-            <option value="cocreator">CO creator</option>
-            <option value="cochecker">CO checker</option>
-             <option value="admin">Admin</option>
-          </select>
+          {/* Create User Button */}
           <button
-            type="submit"
-            disabled={isCreating}
-            className={`${
-              isCreating ? "bg-gray-200" : "bg-gray-300 hover:bg-gray-600"
-            } text-gray-600 font-semibold rounded-lg transition px-4 py-2`}
+            onClick={() => setOpenModal(true)}
+            className="bg-gray-800 dark:bg-gray-200 hover:bg-gray-700 dark:hover:bg-gray-300 text-white dark:text-gray-900 px-4 py-2 rounded-lg shadow transition-colors duration-300"
           >
-            {isCreating ? "Creating..." : "Create User"}
+            + Create User
           </button>
-        </form>
-
-        {/* User List */}
-        <h3 className="text-2xl font-semibold text-gray-700 mb-4">User List</h3>
-
-        <div className="overflow-x-auto">
-          <table className="min-w-full border border-gray-300 rounded-lg">
-            <thead className="bg-gray-400 text-white">
-              <tr>
-                <th className="py-3 px-4 text-left">Name</th>
-                <th className="py-3 px-4 text-left">Email</th>
-                <th className="py-3 px-4 text-left">Role</th>
-                <th className="py-3 px-4 text-left">Status</th>
-                <th className="py-3 px-4 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.length === 0 ? (
-                <tr>
-                  <td colSpan="5" className="text-center py-6 text-gray-500">
-                    No users found.
-                  </td>
-                </tr>
-              ) : (
-                users.map((u) => (
-                  <tr
-                    key={u._id}
-                    className="border-t border-gray-200 hover:bg-gray-50 transition"
-                  >
-                    <td className="py-3 px-4 text-gray-600 ">{u.name}</td>
-                    <td className="py-3 px-4 text-gray-600">{u.email}</td>
-                    <td className="py-3 px-4 text-gray-600 capitalize">
-                      {u.role}
-                    </td>
-                    <td
-                      className={`py-3 px-4 font-semibold ${
-                        u.active ? "text-green-600" : "text-red-500"
-                      }`}
-                    >
-                      {u.active ? "Active" : "Inactive"}
-                    </td>
-                    <td className="py-3 px-4 flex justify-center gap-2">
-                      <button
-                        onClick={() => handleToggleActive(u._id)}
-                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm"
-                      >
-                        {u.active ? "Deactivate" : "Activate"}
-                      </button>
-                      {/* <button
-                        onClick={() =>
-                          handleChangeRole(
-                            u._id,
-                            u.role === "rm" ? "cocreator" : "admin"
-                          )
-                        }
-                        className="bg-gray-400 hover:bg-gray-700 text-white px-3 py-1 rounded-md text-sm"
-                      >
-                        {u.role === "admin" ? "Make User" : "Make Admin"}
-                      </button> */}
-
-                      <button
-                        onClick={() =>
-                          handleChangeRole(
-                            u._id,
-                            u.role === "rm"
-                              ? "cocreator"
-                              : u.role === "cocreator"
-                              ? "cochecker"
-                              : u.role === "cochecker"
-                              ? "admin"
-                              : "rm"
-                          )
-                        }
-                        className="bg-gray-400 hover:bg-gray-700 text-white px-3 py-1 rounded-md text-sm"
-                      >
-                        {u.role === "rm"
-                          ? "Make Cocreator"
-                          : u.role === "cocreator"
-                          ? "Make Cochecker"
-                          : u.role === "cochecker"
-                          ? "Make Admin"
-                          : "Make RM"}
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
         </div>
-      </div>
+
+        {/* Subtitle */}
+        <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base mb-6">
+          Manage all users, roles, and account status in a secure environment.
+        </p>
+
+        {/* User Table */}
+        <UserTable
+          users={users}
+          onToggleActive={handleToggleActive}
+          onRoleChange={handleChangeRole}
+        />
+
+        {/* Modal Form */}
+        <CreateUserModal
+          visible={openModal}
+          loading={isCreating}
+          formData={formData}
+          setFormData={setFormData}
+          onCreate={handleCreate}
+          onClose={() => setOpenModal(false)}
+        />
+      {/* </div> */}
     </div>
   );
 };

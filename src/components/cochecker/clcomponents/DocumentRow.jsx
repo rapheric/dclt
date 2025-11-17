@@ -1,5 +1,6 @@
 import StatusSelect from "./StatusSelect";
 import FileUpload from "./FileUpload";
+import { useNavigate } from "react-router-dom";
 
 const DocumentRow = ({
   category,
@@ -9,67 +10,83 @@ const DocumentRow = ({
   onUpdate,
   onFileUpload,
 }) => {
+  const navigate = useNavigate();
+
+  const openChecklist = () => {
+    navigate("/checklist");
+  };
+
   const statusColor =
     doc.status === "Submitted"
-      ? "text-green-600"
+      ? "text-green-600 dark:text-green-400"
       : doc.status === "Pending"
-      ? "text-red-600"
-      : "text-gray-400";
+      ? "text-yellow-600 dark:text-yellow-400"
+      : "text-gray-500 dark:text-gray-400";
 
   return (
-    <tr className="hover:bg-gray-50 border-b border-black-300 text-gray-700 ">
-      {docIdx === 0 && (
-        <td
-          rowSpan={category.documents.length}
-          className="px-4 py-2 border-r border-black-300 font-semibold text-gray-700 bg-gray-50"
-        >
-          {category.title}
-        </td>
-      )}
+    <tr className="hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 transition-colors duration-200">
+  {docIdx === 0 && (
+    <td
+      rowSpan={category.documents.length}
+      className="px-2 py-0.5 border-r border-gray-200 dark:border-gray-600 font-semibold bg-gray-100 dark:bg-gray-800 text-sm"
+    >
+      {category.title}
+    </td>
+  )}
 
-      <td className="px-4 py-2 border-r border-black-300">{doc.name}</td>
+  <td className="px-2 py-0.5 border-r border-gray-200 dark:border-gray-600 text-sm">
+    {doc.name}
+  </td>
 
-      <td className={`px-4 py-2 border-r border-black-300 font-semibold ${statusColor}`}>
-        {doc.status || "—"}
-      </td>
+  <td
+    className={`px-2 py-0.5 border-r border-gray-200 dark:border-gray-600 font-semibold ${statusColor} text-sm`}
+  >
+    {doc.status || "—"}
+  </td>
 
-      <td className="px-4 py-2 border-r border-black-300">
-        <StatusSelect
-          value={doc.status}
-          onChange={(v) => onUpdate(catIdx, docIdx, "status", v)}
-        />
-      </td>
+  <td className="px-2 py-0.5 border-r border-gray-200 dark:border-gray-600">
+    <StatusSelect
+      value={doc.status}
+      onChange={(v) => onUpdate(catIdx, docIdx, "status", v)}
+      className="h-6 text-sm"
+    />
+  </td>
 
-      <td className="px-4 py-2 border-r border-black-300">
-        <input
-          className="w-full border rounded-md px-2 py-1"
-          placeholder="Add comment..."
-          value={doc.comment}
-          onChange={(e) => onUpdate(catIdx, docIdx, "comment", e.target.value)}
-        />
-      </td>
+  <td className="px-2 py-0.5 border-r border-gray-200 dark:border-gray-600">
+    <input
+      className="w-full border border-gray-300 dark:border-gray-600 rounded px-2 py-0.5 text-sm text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
+      placeholder="Add comment..."
+      value={doc.comment || ""}
+      onChange={(e) =>
+        onUpdate(catIdx, docIdx, "comment", e.target.value)
+      }
+    />
+  </td>
 
-      <td className="px-4 py-2 border-r border-black-300">
-        <FileUpload
-          id={`file-${catIdx}-${docIdx}`}
-          file={doc.file}
-          onUpload={(file) => onFileUpload(catIdx, docIdx, file)}
-        />
-      </td>
+  <td className="px-2 py-0.5 border-r border-gray-200 dark:border-gray-600">
+    <FileUpload
+      id={`file-${catIdx}-${docIdx}`}
+      file={doc.file}
+      onUpload={(file) => onFileUpload(catIdx, docIdx, file)}
+      compact
+    />
+  </td>
 
-      <td className="px-4 py-2">
-        {doc.file ? (
-          <button
-            onClick={() => window.open(URL.createObjectURL(doc.file), "_blank")}
-            className="bg-gray-700 hover:bg-gray-900 text-gray-600 text-sm px-3 py-1.5 rounded-md"
-          >
-            View
-          </button>
-        ) : (
-          <span className="text-gray-400 text-sm">No File</span>
-        )}
-      </td>
-    </tr>
+  <td className="px-2 py-0.5 text-center">
+    {doc.file ? (
+      <button
+        onClick={openChecklist}
+        className="bg-gray-700 dark:bg-gray-600 hover:bg-gray-900 dark:hover:bg-gray-500 text-white text-xs px-2 py-0.5 rounded-md transition-colors duration-200"
+      >
+        View
+      </button>
+    ) : (
+      <span className="text-gray-400 dark:text-gray-500 text-xs">
+        No File
+      </span>
+    )}
+  </td>
+</tr>
   );
 };
 

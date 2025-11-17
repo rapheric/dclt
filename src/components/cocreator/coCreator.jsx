@@ -1,222 +1,258 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
-    FileText,
-    Clock,
-    AlertTriangle,
-    CheckCircle,
-    PlusCircle,
-    XCircle,
-    Check,
+  FileText,
+  Clock,
+  AlertTriangle,
+  CheckCircle,
+  PlusCircle,
 } from "lucide-react";
-import Navbarco from "./navbarco";
 
-const Cocreator = () => {
-    const [activeTab, setActiveTab] = useState("active");
-    // const [showModal, setShowModal] = useState(false);
+import { Modal, Select, Input, Button, List, Typography, message } from "antd";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 
-    const NCBA_BLUE = "#3A2A82";
 
-    const cards = [
-        {
-            title: "Total Checklists",
-            value: 3,
-            icon: <FileText size={28} className="text-[#3A2A82]" />,
-        },
-        {
-            title: "Pending Review",
-            value: 2,
-            icon: <Clock size={28} className="text-orange-500" />,
-        },
-        {
-            title: "Pending Deferrals",
-            value: 2,
-            icon: <AlertTriangle size={28} className="text-yellow-500" />,
-        },
-        {
-            title: "Completed",
-            value: 1,
-            icon: <CheckCircle size={28} className="text-green-600" />,
-        },
-    ];
+import { useCreateChecklistMutation } from "../../api/checklistApi";
+import CheckListPage from "./checklistPage";
 
-    const deferrals = [
-        {
-            id: 1,
-            title: "Audited Financial Statements 2023",
-            client: "ABC Corporation",
-            rm: "Sarah Johnson",
-            requestedDate: "2024-11-08",
-            reason:
-                "Auditor is currently finalizing the report. Expected completion date is November 25, 2024. Will submit immediately upon receipt.",
-        },
-        {
-            id: 2,
-            title: "Board Resolution",
-            client: "Tech Solutions Ltd",
-            rm: "Michael Chen",
-            requestedDate: "2024-11-10",
-            reason:
-                "Board meeting scheduled for November 20, 2024. Resolution will be prepared and submitted within 2 business days after the meeting.",
-        },
-    ];
+const { Option } = Select;
+
+const Hero = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [createChecklist] = useCreateChecklistMutation();
+  const [loanType, setLoanType] = useState("mortgage");
+
+  const NCBA_BLUE = "#3A2A82";
+
+  const cards = [
+    {
+      title: "Total Checklists",
+      value: 3,
+      icon: <FileText size={28} className="text-[#3A2A82]" />,
+    },
+    {
+      title: "Pending Review",
+      value: 2,
+      icon: <Clock size={28} className="text-orange-500" />,
+    },
+    {
+      title: "Pending Deferrals",
+      value: 2,
+      icon: <AlertTriangle size={28} className="text-yellow-500" />,
+    },
+    {
+      title: "Completed",
+      value: 1,
+      icon: <CheckCircle size={28} className="text-green-600" />,
+    },
+  ];
+
+  // ===============================
+  // SAVE CHECKLIST
+  // ===============================
+  const handleSaveChecklist = async (data) => {
+    try {
+      const payload = {
+        loanType: data.loanType,
+        applicantName: "Unknown Applicant",
+        categories: data.categories,
+      };
+
+      await createChecklist(payload).unwrap();
+      message.success("Checklist created successfully!");
+    } catch (error) {
+      console.error("Checklist creation failed:", error);
+      message.error("Failed to create checklist");
+    }
+  };
+
+  // ===============================
+  // DOCUMENT CHECKLIST MODAL
+  // ===============================
+  const DocumentChecklistModal = ({ open, onClose, onSave }) => {
+    const [loanType, setLoanType] = useState("");
+    const [customDocs, setCustomDocs] = useState([]);
+    const [customDocInput, setCustomDocInput] = useState("");
+
+    const defaultDocuments = {
+      mortgage: [
+        "Proof of income",
+        "Credit report",
+        "Property appraisal",
+        "Identification documents",
+      ],
+      "Sme loan": [
+        "Business financial statements",
+        "Asset purchase invoice",
+        "Bank statements",
+        "Identification documents",
+      ],
+    };
+
+    const documents = useMemo(() => {
+      const defaults = loanType ? defaultDocuments[loanType] : [];
+      return [...defaults, ...customDocs];
+    }, [loanType, customDocs]);
+
+    const addCustomDoc = () => {
+      const trimmed = customDocInput.trim();
+      if (!trimmed || documents.includes(trimmed)) return;
+
+      setCustomDocs([...customDocs, trimmed]);
+      setCustomDocInput("");
+    };
+
+    const deleteDoc = (doc) => {
+      setCustomDocs(customDocs.filter((d) => d !== doc));
+    };
+
+    const saveModal = () => {
+      if (!loanType) {
+        message.warning("Please select a loan type");
+        return;
+      }
+
+      const formattedDocs = documents.map((d) => ({
+        name: d,
+        status: "",
+        comment: "",
+        fileUrl: null,
+      }));
+
+      onSave({
+        loanType,
+        categories: [
+          {
+            title: `${loanType} Required Documents`,
+            documents: formattedDocs,
+          },
+        ],
+      });
+
+      onClose();
+      setLoanType("");
+      setCustomDocs([]);
+      setCustomDocInput("");
+    };
 
     return (
-        <>
-        <Navbarco/>
-        <section className="bg-[#F4F7FC] px-6 py-6 rounded-xl shadow-sm">
-            
+      <Modal
+        title="Create New Document Checklist"
+        open={open}
+        onCancel={onClose}
+        onOk={saveModal}
+        okText="Save Checklist"
+        width={600}
+      >
+        {/* Loan Type Selection */}
+        <div className="mb-6">
+          <Typography.Text className="block mb-2 text-gray-600 font-semibold">
+            Select Loan Type
+          </Typography.Text>
 
-            {/* SUMMARY CARDS */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                {cards.map((card) => (
-                    <div
-                        key={card.title}
-                        className="bg-white border rounded-xl shadow-sm p-6 hover:shadow-lg transition-all"
-                    >
-                        <div className="flex items-center justify-between mb-3">
-                            <p className="text-gray-700 font-semibold">{card.title}</p>
-                            {card.icon}
-                        </div>
-                        <p className="text-3xl font-bold text-gray-800">{card.value}</p>
-                    </div>
-                ))}
-            </div>
+         <Select
+  value={loanType}
+  onChange={setLoanType}
+  placeholder={<span style={{ color: "#9CA3AF" }}>Select loan type</span>} 
+  style={{ width: "100%", color: "#4B5563" }}
+  dropdownStyle={{ color: "#4B5563" }}
+>
+  <Option value="mortgage" style={{ color: "#4B5563" }}>
+    Mortgage
+  </Option>
+  <Option value="Sme loan" style={{ color: "#4B5563" }}>
+    Sme Loan
+  </Option>
+</Select>
 
-            {/* CREATE NEW CHECKLIST BUTTON */}
-            <div className="mt-6">
-                <button
-                    // onClick={() => setShowModal(true)}
-                    className="px-5 py-2.5 rounded-lg text-white shadow-md font-medium flex items-center gap-2 transition"
-                    style={{ backgroundColor: NCBA_BLUE }}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#2A1F63")}
-                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = NCBA_BLUE)}
-                >
-                    <PlusCircle size={18} />
-                    Create New Document Checklist
-                </button>
-            </div>
+           
+        </div>
 
-            {/* TABS */}
-            <div className="flex items-center space-x-8 text-sm font-medium mt-6">
-                {["active", "deferrals", "completed"].map((tab) => (
-                    <button
-                        key={tab}
-                        onClick={() => setActiveTab(tab)}
-                        className={`pb-2 capitalize transition ${activeTab === tab
-                                ? "border-b-2"
-                                : "text-gray-600 hover:text-[#3A2A82]"
-                            }`}
-                        style={
-                            activeTab === tab
-                                ? { color: NCBA_BLUE, borderColor: NCBA_BLUE }
-                                : {}
-                        }
-                    >
-                        {tab === "deferrals" ? (
-                            <span className="relative">
-                                Deferrals
-                                <span className="absolute -top-2 -right-3 bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
-                                    2
-                                </span>
-                            </span>
-                        ) : (
-                            tab
-                        )}
-                    </button>
-                ))}
-            </div>
+        {/* Required Documents */}
+        <div className="mb-6">
+          <Typography.Text className="block mb-2 font-semibold">
+            Required Documents
+          </Typography.Text>
 
-            {/* TAB CONTENT */}
-            <div className="mt-6">
-
-                {/* ACTIVE TAB */}
-                {activeTab === "active" && (
-                    <p className="text-gray-600">List of active checklists goes here...</p>
+          <List
+            bordered
+            dataSource={documents}
+            renderItem={(item) => (
+              <List.Item className="flex justify-between">
+                <span>{item}</span>
+                {customDocs.includes(item) && (
+                  <DeleteOutlined
+                    className="text-red-500 cursor-pointer"
+                    onClick={() => deleteDoc(item)}
+                  />
                 )}
+              </List.Item>
+            )}
+          />
+        </div>
 
-                {/* COMPLETED TAB */}
-                {activeTab === "completed" && (
-                    <div className="mt-4">
-
-                        <div className="bg-[#F2FCF6] border border-green-300 rounded-xl p-6 shadow-sm relative">
-
-                            <h3 className="text-xl font-semibold text-gray-800">XYZ Enterprises</h3>
-                            <p className="text-gray-600 text-sm mt-1">Completed on 2024-11-05</p>
-
-                            <span className="absolute top-6 right-6 bg-green-600 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
-                                <CheckCircle size={16} className="text-white" />
-                                Completed
-                            </span>
-
-                            <div className="mt-6 flex items-center gap-3 text-green-700 font-medium text-lg">
-                                <CheckCircle size={22} className="text-green-600" />
-                                All 6 documents approved
-                            </div>
-                        </div>
-
-                    </div>
-                )}
-
-                {/* DEFERRALS TAB — UPDATED TO MATCH YOUR SCREENSHOT */}
-                {activeTab === "deferrals" && (
-                    <div className="space-y-6 mt-4">
-
-                        {deferrals.map((item) => (
-                            <div
-                                key={item.id}
-                                className="bg-[#FFFCF5] border border-yellow-300 rounded-xl p-6 shadow-sm"
-                            >
-                                {/* Header */}
-                                <div className="flex justify-between items-start">
-                                    <div>
-                                        <h3 className="text-xl font-semibold text-gray-900">{item.title}</h3>
-                                        <p className="text-gray-700 mt-1">
-                                            Client: {item.client} • RM: {item.rm}
-                                        </p>
-                                    </div>
-
-                                    <span className="flex items-center gap-1 bg-yellow-100 text-yellow-700 border border-yellow-300 px-3 py-1 rounded-full text-xs font-medium">
-                                        <Clock size={14} className="text-yellow-600" />
-                                        Pending Review
-                                    </span>
-                                </div>
-
-                                {/* Requested Date */}
-                                <p className="text-gray-700 font-medium mt-4">
-                                    Requested on: {item.requestedDate}
-                                </p>
-
-                                {/* Reason Box */}
-                                <div className="mt-4 bg-white border border-yellow-300 rounded-lg p-4 text-gray-800 leading-relaxed">
-                                    {item.reason}
-                                </div>
-
-                                {/* Buttons */}
-                                <div className="flex items-center gap-4 mt-6">
-
-                                    <button className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg font-medium shadow">
-                                        <Check size={18} />
-                                        Approve Deferral
-                                    </button>
-
-                                    <button className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg font-medium shadow">
-                                        <XCircle size={18} />
-                                        Reject Deferral
-                                    </button>
-
-                                </div>
-                            </div>
-                        ))}
-
-                    </div>
-                )}
-
-            </div>
-
-        </section>
-        </>
+        {/* Add Custom Document */}
+        <div className="flex gap-2">
+          <Input
+            placeholder="Add custom document"
+            value={customDocInput}
+            onChange={(e) => setCustomDocInput(e.target.value)}
+            onPressEnter={addCustomDoc}
+          />
+          <Button type="primary" icon={<PlusOutlined />} onClick={addCustomDoc}>
+            Add
+          </Button>
+        </div>
+      </Modal>
     );
+  };
+
+  // ===============================
+  // UI RETURN
+  // ===============================
+  return (
+    <section className="bg-[#F4F7FC] px-6 py-6 rounded-xl shadow-sm animate-fadeIn">
+      {/* CARDS */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
+        {cards.map((card) => (
+          <div
+            key={card.title}
+            className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 hover:shadow-md transition-all"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-gray-700 font-semibold">{card.title}</p>
+              {card.icon}
+            </div>
+
+            <p className="text-3xl font-bold text-gray-800">{card.value}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* CREATE BUTTON */}
+      <div className="mt-8">
+        <button
+          onClick={() => setShowModal(true)}
+          className="px-5 py-2.5 rounded-lg text-white shadow-md font-medium flex items-center gap-2 transition"
+          style={{ backgroundColor: NCBA_BLUE }}
+        >
+          <PlusCircle size={18} />
+          Create New Document Checklist
+        </button>
+      </div>
+
+      {/* Checklist List Page */}
+      <div>
+        <CheckListPage />
+      </div>
+
+
+      <DocumentChecklistModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        onSave={handleSaveChecklist}
+      />
+    </section>
+  );
 };
 
-export default Cocreator;
-
+export default Hero;

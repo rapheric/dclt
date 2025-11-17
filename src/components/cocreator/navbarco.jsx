@@ -10,12 +10,11 @@ const Navbarco = () => {
 
   const navigate = useNavigate();
 
-  const logout =()=>{
-navigate("/login")
-  }
+  const logout = () => {
+    navigate("/login");
+  };
   return (
     <nav className="bg-black px-6 py-3 flex items-center justify-between relative z-50 shadow-md">
-
       {/* Left: Placeholder Logo (NC) */}
       <div className="flex items-center space-x-2">
         <div className="w-9 h-9 bg-white text-black flex items-center justify-center rounded-lg font-bold text-base">
@@ -37,9 +36,11 @@ navigate("/login")
 
       {/* Right: Links + Profile */}
       <div className="hidden md:flex items-center space-x-6 text-white font-medium relative">
-
         {/* HOME — now forces blue on hover */}
-        <a href="#" className="text-white hover:!text-blue-400 transition duration-200">
+        <a
+          href="#"
+          className="text-white hover:text-blue-400! transition duration-200"
+        >
           Home
         </a>
 
@@ -67,7 +68,10 @@ navigate("/login")
               Profile
             </a>
             <hr className="my-2 border-gray-700" />
-            <button onClick={logout} className="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-800 rounded-md">
+            <button
+              onClick={logout}
+              className="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-800 rounded-md"
+            >
               Logout
             </button>
           </div>
@@ -86,7 +90,6 @@ navigate("/login")
       {isOpen && (
         <div className="absolute top-14 left-0 w-full bg-black border-t border-gray-700 shadow-md md:hidden z-50">
           <div className="flex flex-col items-start px-6 py-4 space-y-3 text-white font-medium">
-
             {/* Mobile Search */}
             <div className="flex items-center bg-gray-800 px-3 py-2 rounded-lg w-full">
               <Search className="text-gray-300 mr-2" size={18} />
@@ -100,7 +103,10 @@ navigate("/login")
             </div>
 
             {/* HOME on Mobile */}
-            <a href="#" className="text-white hover:text-blue-400! w-full transition">
+            <a
+              href="#"
+              className="text-white hover:text-blue-400! w-full transition"
+            >
               Home
             </a>
 
