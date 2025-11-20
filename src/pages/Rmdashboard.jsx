@@ -1,10 +1,18 @@
 import React from "react";
 import { FiHome, FiUsers, FiList, FiLogOut } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
-const RmDashboard = () => {
+const RmDashboardd = () => {
+//   const [openChecklist, setOpenChecklist] = useState(false);
+
+const navigate = useNavigate()
+
+  const handleOpenChecklist = () => {
+    navigate("/rmck")
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-100">
-
       {/* LEFT SIDEBAR */}
       <aside className="w-64 bg-white shadow-md p-6">
         <h2 className="text-xl font-bold text-blue-600 mb-6">RM Portal</h2>
@@ -22,15 +30,18 @@ const RmDashboard = () => {
             <FiList /> Loan Applications
           </button>
 
-          <button className="flex items-center gap-3 text-red-500 font-medium mt-10">
-            <FiLogOut /> Logout
+          <button
+            onClick={handleOpenChecklist}
+            className="flex items-center gap-3 text-red-500 font-medium mt-10"
+          >
+            {/* <FiLogOut /> Logout */}
+            open rm checklist
           </button>
         </nav>
       </aside>
 
       {/* MAIN CONTENT */}
       <main className="flex-1 p-8">
-
         <h1 className="text-3xl font-bold text-gray-800 mb-6">RM Dashboard</h1>
 
         {/* CARDS */}
@@ -51,9 +62,12 @@ const RmDashboard = () => {
           </div>
         </div>
 
+    
         {/* TABLE */}
         <div className="bg-white p-6 rounded shadow">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">Recent Loan Requests</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">
+            Recent Loan Requests
+          </h2>
 
           <table className="w-full text-left text-sm">
             <thead className="border-b text-gray-600">
@@ -82,10 +96,9 @@ const RmDashboard = () => {
             </tbody>
           </table>
         </div>
-
       </main>
     </div>
   );
 };
 
-export default RmDashboard;
+export default RmDashboardd;

@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  Table,
-  Tag,
-  Button,
-  Typography,
-  Modal,
-  Spin,
-  List,
-} from "antd";
+import { Table, Tag, Button, Typography, Modal, Spin, List } from "antd";
 import {
   useGetChecklistsQuery,
   useCountChecklistsQuery,
@@ -24,7 +16,7 @@ const CheckListPage = () => {
   // FETCH PAGINATED CHECKLISTS
   const { data, isLoading } = useGetChecklistsQuery({
     page,
-    limit: 10,
+    limit: 6,
   });
 
   // COUNT TOTALS
@@ -34,12 +26,10 @@ const CheckListPage = () => {
   const checklists = data?.data || [];
 
   // FETCH SELECTED CHECKLIST DETAILS
-  const {
-    data: checklist,
-    isLoading: detailsLoading,
-  } = useGetChecklistByIdQuery(selectedId, {
-    skip: !selectedId,
-  });
+  const { data: checklist, isLoading: detailsLoading } =
+    useGetChecklistByIdQuery(selectedId, {
+      skip: !selectedId,
+    });
 
   const openModal = (id) => {
     setSelectedId(id);
@@ -54,18 +44,23 @@ const CheckListPage = () => {
   /** TABLE COLUMNS */
   const columns = [
     {
-      title: "Applicant",
-      dataIndex: "applicantName",
-      key: "applicantName",
-      render: (name, row) => (
+      title: "RM name",
+      key: "applicant",
+      render: (_, row) => (
         <div className="font-semibold text-gray-800 dark:text-gray-200">
-          {name}
+          {row.applicantName}
+
+          <div className="text-xs text-gray-600 dark:text-gray-400">
+            RM: {row.rmId?.firstName} {row.rmId?.lastName}
+          </div>
+
           <div className="text-xs text-gray-500 dark:text-gray-400">
             ID: {row.applicantId || "N/A"}
           </div>
         </div>
       ),
     },
+
     {
       title: "Loan Type",
       dataIndex: "loanType",
@@ -81,7 +76,9 @@ const CheckListPage = () => {
       key: "documents",
       render: (_, row) => {
         const documents = row.categories?.[0]?.documents || [];
-        const submitted = documents.filter((d) => d.status === "Submitted").length;
+        const submitted = documents.filter(
+          (d) => d.status === "Submitted"
+        ).length;
         const pending = documents.filter((d) => d.status === "Pending").length;
         const notActioned = documents.filter((d) => !d.status).length;
 
@@ -156,7 +153,7 @@ const CheckListPage = () => {
         ) : checklist ? (
           <div>
             <Title level={5}>{checklist.loanType} — Checklist</Title>
-            <Text type="secondary">Applicant: {checklist.applicantName}</Text>
+            <Text type="secondary">Applicant: {checklist.rmId}</Text>
 
             <div className="mt-4">
               {checklist.categories?.map((category) => (

@@ -9,7 +9,8 @@ export const store = configureStore({
     auth: authReducer,
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
-     [checklistApi.reducerPath]: checklistApi.reducer,
+    //  [checklistApi.reducerPath]: checklistApi.reducer,
+      [checklistApi.reducerPath]: checklistApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(authApi.middleware, userApi.middleware,checklistApi.middleware ),
