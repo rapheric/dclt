@@ -6,4 +6,25 @@
   width: 100%;
 }
 
+:root {
+  --ncba-primary: #3a2a82;
+  --ncba-bg: #f4f6ff;
+  --ncba-card: #ffffff;
+  --ncba-text: #1a1a1a;
+}
+
+.dark {
+  --ncba-primary: #24185c;
+  --ncba-bg: #0f1120;
+  --ncba-card: #1b1e33;
+  --ncba-text: #ffffff;
+}
+
+body {
+  background: var(--ncba-bg);
+  color: var(--ncba-text);
+  transition: 0.25s ease-in-out;
+}
+
+
     @import "tailwindcss";

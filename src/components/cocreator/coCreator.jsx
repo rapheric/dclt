@@ -290,37 +290,37 @@ const CheckerLayout = ({
             icon: <FileTextOutlined />,
             label: "Checklists",
           },
-          {
-            key: "deffered",
-            icon: <ClockCircleOutlined />,
-            label: "deffered",
-          },
+          // {
+          //   key: "deffered",
+          //   icon: <ClockCircleOutlined />,
+          //   label: "deffered",
+          // },
           {
             key: "completed",
             icon: <CheckCircleOutlined />,
             label: "Completed",
           },
           { key: "reports", icon: <SettingOutlined />, label: "Reports" },
-          {
-            key: "active",
-            icon: <ClockCircleOutlined />,
-            label: "Active",
-          },
+          // {
+          //   key: "active",
+          //   icon: <ClockCircleOutlined />,
+          //   label: "Active",
+          // },
           {
             key: "create checklist",
             icon: <ClockCircleOutlined />,
             label: "create checklist",
           },
-          {
-            key: "rm checklist",
-            icon: <ClockCircleOutlined />,
-            label: "rm checklist",
-          },
-          {
-            key: "co checklist",
-            icon: <ClockCircleOutlined />,
-            label: "co checklist",
-          },
+          // {
+          //   key: "rm checklist",
+          //   icon: <ClockCircleOutlined />,
+          //   label: "rm checklist",
+          // },
+          // {
+          //   key: "co checklist",
+          //   icon: <ClockCircleOutlined />,
+          //   label: "co checklist",
+          // },
         ]}
       />
 
@@ -404,10 +404,10 @@ const MainLayout = () => {
           return <h1>dashboard</h1>; 
       case "rm checklistdrawer":
          return <h1>dashboard</h1>;
-      case "co checklist":
-         return <h1>dashboard</h1>;
-      case "rm checklist":
-         return <h1>dashboard</h1>;
+      // case "co checklist":
+      //    return <h1>dashboard</h1>;
+      // case "rm checklist":
+      //    return <h1>dashboard</h1>;
       case "reports":
          return <h1>dashboard</h1>;
       default:

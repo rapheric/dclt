@@ -1,5 +1,4 @@
-// src/components/Dashboard/CreateUserModal.jsx
-
+// export default CreateUserModal;
 import React, { useMemo } from "react";
 import { Modal, Input, Select, Form, Button } from "antd";
 
@@ -27,7 +26,7 @@ const CreateUserModal = ({
       footer={null}
       centered
       destroyOnClose={false}
-      width={380} // Mobile-first width
+      width={380}
       className="dark:bg-gray-900"
       bodyStyle={{
         padding: "10px 16px",

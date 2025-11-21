@@ -1,29 +1,26 @@
 import React, { useState } from "react";
 import { Menu } from "antd";
-import {
-  CheckCircle,
-  Clock,
-  FileBarChart,
-  Settings,
-} from "lucide-react";
-import {
-  BellOutlined,
-  UserOutlined,
-  MenuOutlined,
-} from "@ant-design/icons";
+import { BellOutlined, UserOutlined, MenuOutlined } from "@ant-design/icons";
 
-// Existing components (functionality unchanged)
-import CompletedChecklists from "../../cocreator/checklists/CompletedChecklists";
-import CombinedCharts from "../../stats";
-import DeferredChecklists from "../../cocreator/checklists/DeferredChecklists";
-import ActiveChecklists from "../../cocreator/checklists/ActiveChecklists";
-import Hero from "../../../pages/Hero";
-import BaseChecklistTable from "./Checkertable";
+import { ClipboardList, Settings } from "lucide-react";
+// import CheckListPage from "../cocreator/pages/CheckListPage";
+import RequestChecklist from "./chechlistview";
+import RMChecklistTable from "./RMChecklistTable";
+import BaseChecklistTable from "./BaseChecklistTable";
+import BaseChecklistTableRm from "./BaseChecklistTable";
+import OverdueChecklistsTable from "./overduechecklists";
+import ApprovedChecklistsTable from "./ApprovedChecklistsTable";
+import DeferredChecklistsTable from "./Defferedrmchecklist";
 
 /* ---------------------------------------------------------------------- */
-/*  Enhanced SIDEBAR — NCBA-grade, sleek, modern corporate UI            */
+/*  SIDEBAR — upgraded to NCBA corporate theme                            */
 /* ---------------------------------------------------------------------- */
-const Sidebar = ({ selectedKey, setSelectedKey, collapsed, toggleCollapse }) => {
+const Sidebar = ({
+  selectedKey,
+  setSelectedKey,
+  collapsed,
+  toggleCollapse,
+}) => {
   const handleClick = (e) => setSelectedKey(e.key);
 
   return (
@@ -39,7 +36,7 @@ const Sidebar = ({ selectedKey, setSelectedKey, collapsed, toggleCollapse }) => 
         boxShadow: "2px 0 10px rgba(0,0,0,0.15)",
       }}
     >
-      {/* Brand */}
+      {/* Logo / Brand */}
       <div
         style={{
           padding: collapsed ? "20px 0" : "25px 20px",
@@ -49,10 +46,10 @@ const Sidebar = ({ selectedKey, setSelectedKey, collapsed, toggleCollapse }) => 
           textAlign: collapsed ? "center" : "left",
         }}
       >
-        {collapsed ? "NC" : "NCBA Checker Portal"}
+        {collapsed ? "RM" : "RM Dashboard"}
       </div>
 
-      {/* Menu */}
+      {/* MENU */}
       <Menu
         theme="dark"
         mode="inline"
@@ -66,29 +63,26 @@ const Sidebar = ({ selectedKey, setSelectedKey, collapsed, toggleCollapse }) => 
         inlineCollapsed={collapsed}
         items={[
           {
-            key: "completed",
-            icon: <CheckCircle size={20} />,
-            label: "Completed Checklists",
-          },
-          {
-            key: "deferred",
-            icon: <Clock size={20} />,
-            label: "Deferred Checklists",
-          },
-          {
-            key: "reports",
-            icon: <FileBarChart size={20} />,
-            label: "Reports & Analytics",
+            key: "approved",
+            label: "Approved/Completed",
+            icon: <ClipboardList size={20} />,
           },
           {
             key: "checklists",
-            icon: <Settings size={20} />,
-            label: "Checklists",
+            label: "Overdue Checklists",
+            icon: <ClipboardList size={20} />,
           },
-           {
-            key: "action",
+
+          {
+            key: "overdue",
+            label:"overdue",
+            icon: <ClipboardList size={20} />,
+          },
+
+          {
+            key: "deffered Checklists",
+            label: "Deferred Checklists",
             icon: <Settings size={20} />,
-            label: "All Checklists",
           },
         ]}
       />
@@ -123,7 +117,7 @@ const Sidebar = ({ selectedKey, setSelectedKey, collapsed, toggleCollapse }) => 
 };
 
 /* ---------------------------------------------------------------------- */
-/*  Enhanced NAVBAR — clean, polished, corporate-grade                   */
+/*  NAVBAR — improved to match Checker Layout                             */
 /* ---------------------------------------------------------------------- */
 const Navbar = ({ toggleSidebar }) => {
   return (
@@ -152,18 +146,10 @@ const Navbar = ({ toggleSidebar }) => {
 
       <div style={{ display: "flex", alignItems: "center", gap: 25 }}>
         <BellOutlined
-          style={{
-            fontSize: 22,
-            cursor: "pointer",
-            color: "#2B1C67",
-          }}
+          style={{ fontSize: 22, cursor: "pointer", color: "#2B1C67" }}
         />
         <UserOutlined
-          style={{
-            fontSize: 22,
-            cursor: "pointer",
-            color: "#2B1C67",
-          }}
+          style={{ fontSize: 22, cursor: "pointer", color: "#2B1C67" }}
         />
       </div>
     </div>
@@ -171,28 +157,29 @@ const Navbar = ({ toggleSidebar }) => {
 };
 
 /* ---------------------------------------------------------------------- */
-/*  Main Layout — cleaner, more enterprise, improved spacing & look      */
+/*  MAIN LAYOUT — polished, enterprise look                               */
 /* ---------------------------------------------------------------------- */
-const CheckerLayout = () => {
-  const [selectedKey, setSelectedKey] = useState("completed");
+const RmLayout = () => {
+  const [selectedKey, setSelectedKey] = useState("checklists");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const toggleSidebar = () => setSidebarCollapsed(!sidebarCollapsed);
 
   const renderContent = () => {
     switch (selectedKey) {
-      case "completed":
-        return <CompletedChecklists />;
-      case "reports":
-        return <CombinedCharts />;
-      case "deferred":
-        return <DeferredChecklists />;
+      case "approved":
+        return <ApprovedChecklistsTable />;
+      case "deffered Checklists":
+      return <DeferredChecklistsTable/>;
+      case "Deferred Items Waiting for Approval":
+        return <RequestChecklist />;
+
+      case "overdue":
+        return <OverdueChecklistsTable />;
       case "checklists":
-        return <Hero />;
-        case "action":
-        return <BaseChecklistTable />;
+        return <BaseChecklistTableRm />;
       default:
-        return <ActiveChecklists />;
+        return <h1 style={pageStyle}>Users</h1>;
     }
   };
 
@@ -202,7 +189,7 @@ const CheckerLayout = () => {
         display: "flex",
         height: "100vh",
         overflow: "hidden",
-        background: "#f4f5f9",
+        background: "#f4f6ff",
       }}
     >
       {/* Sidebar */}
@@ -232,4 +219,11 @@ const CheckerLayout = () => {
   );
 };
 
-export default CheckerLayout;
+/* Shared Page Style */
+const pageStyle = {
+  fontSize: 28,
+  fontWeight: "bold",
+  color: "#2B1C67",
+};
+
+export default RmLayout;

@@ -1,0 +1,48 @@
+export const mockChecklists = [
+  {
+    id: "LN-001",
+    customerName: "John Kamau",
+    rm: "Sarah Wambui",
+    loanType: "Mortgage",
+    totalDocs: 12,
+    submittedDocs: 6,
+    pendingDocs: 6,
+    status: "Active",
+    deadline: "2025-03-12",
+    checklist: [
+      { name: "ID Copy", status: "Submitted" },
+      { name: "PIN Certificate", status: "Pending" },
+      { name: "Bank Statements", status: "Submitted" },
+    ],
+  },
+  {
+    id: "LN-002",
+    customerName: "Linda Mwangi",
+    rm: "John Otieno",
+    loanType: "Asset Finance",
+    totalDocs: 8,
+    submittedDocs: 3,
+    pendingDocs: 5,
+    status: "Deferred",
+    deadline: "2025-03-18",
+    checklist: [
+      { name: "Company CR12", status: "Pending" },
+      { name: "Director KYC", status: "Deferred" },
+    ],
+  },
+  {
+    id: "LN-003",
+    customerName: "Peter Njoroge",
+    rm: "Sarah Wambui",
+    loanType: "Sme Loan",
+    totalDocs: 10,
+    submittedDocs: 10,
+    pendingDocs: 0,
+    status: "Completed",
+    deadline: "2025-02-28",
+    checklist: [
+      { name: "Business License", status: "Submitted" },
+      { name: "CRB Certificate", status: "Submitted" },
+    ],
+  },
+];

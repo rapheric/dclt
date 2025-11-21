@@ -115,7 +115,7 @@ const LoginPage = () => {
       // Role-based routing
       switch (role) {
         case "admin":
-          navigate("/dashboard");
+          navigate("/admin");
           break;
         case "cochecker":
           navigate("/cochecker");

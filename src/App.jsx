@@ -5,7 +5,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 // Pages
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import Dashboard from "./pages/Admindashboard";
+// import Dashboard from "./pages/Admindashboard";
 // import Hero from "./pages/Hero";
 // import RmDashboard from "./pages/Rmdashboard";
 import CreditChecklist from "./pages/CreditChecklist";
@@ -28,19 +28,22 @@ import Settings from "././components/cocreator/cocreatordash/pages/Settings";
 // Styles
 import "./App.css";
 // import RmDashboardd from "./pages/Rmdashboard";
-import RMDashboard from "./components/cocreator/rmDashboard";
+// import RMDashboard from "./components/cocreator/rmDashboard";
 // import CheckerLayout from "./components/cocreator/coCreator";
 import CheckerLayout from "./components/cochecker/clLayout/CheckerLayout";
+import AdminLayout from "./components/admin/AdminLayout/AdminLayout";
+import RmLayout from "./components/Rm/RmLayout";
+
+
 
 const App = () => {
   return (
     <Routes>
-
       {/* PUBLIC ROUTES */}
       <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-        <Route path="/cochecker" element={<CheckerLayout />} />
+      <Route path="/cochecker" element={<CheckerLayout />} />
 
       {/* ==========================
           MAIN LAYOUT ROUTES
@@ -66,15 +69,23 @@ const App = () => {
           OTHER DASHBOARD ROUTES
           (For RM, CO, CO-Creator)
       =========================== */}
-      <Route
+      {/* <Route
         path="/dashboard"
         element={
           <ProtectedRoute>
             <Dashboard />
           </ProtectedRoute>
         }
-      />
+      /> */}
 
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      />
       {/* <Route
         path="/cochecker"
         element={
@@ -84,17 +95,16 @@ const App = () => {
         }
       /> */}
 
-
       <Route
         path="/rm"
         element={
           <ProtectedRoute>
-            <RMDashboard />
+            <RmLayout />
           </ProtectedRoute>
         }
       />
 
-       {/* <Route
+      {/* <Route
         path="/cocheker"
         element={
           <ProtectedRoute>
@@ -118,7 +128,6 @@ const App = () => {
 
       {/* CATCH-ALL */}
       <Route path="*" element={<Navigate to="/login" />} />
-
     </Routes>
   );
 };
