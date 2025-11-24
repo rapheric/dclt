@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { Menu } from "antd";
-import {
-  BellOutlined,
-  UserOutlined,
-  MenuOutlined,
-} from "@ant-design/icons";
+import { BellOutlined, UserOutlined, MenuOutlined } from "@ant-design/icons";
 
 import {
   ClipboardList,
@@ -51,11 +47,12 @@ const applyTheme = (mode) => {
     document.documentElement.style.setProperty(key, vars[key])
   );
 };
-
-/* ---------------------------------------------------------------------- */
-/*  SIDEBAR — fully responsive + theme-based                               */
-/* ---------------------------------------------------------------------- */
-const Sidebar = ({ selectedKey, setSelectedKey, collapsed, toggleCollapse }) => {
+const Sidebar = ({
+  selectedKey,
+  setSelectedKey,
+  collapsed,
+  toggleCollapse,
+}) => {
   const handleClick = (e) => setSelectedKey(e.key);
 
   return (
@@ -96,8 +93,16 @@ const Sidebar = ({ selectedKey, setSelectedKey, collapsed, toggleCollapse }) => 
         }}
         inlineCollapsed={collapsed}
         items={[
-          { key: "all users", label: "All users", icon: <CheckCircle size={18} /> },
-          { key: "deactivated users", label: "Deactivated Users", icon: <Clock size={18} /> },
+          {
+            key: "all users",
+            label: "All users",
+            icon: <CheckCircle size={18} />,
+          },
+          {
+            key: "deactivated users",
+            label: "Deactivated Users",
+            icon: <Clock size={18} />,
+          },
         ]}
       />
 
@@ -123,9 +128,6 @@ const Sidebar = ({ selectedKey, setSelectedKey, collapsed, toggleCollapse }) => 
   );
 };
 
-/* ---------------------------------------------------------------------- */
-/*  NAVBAR — responsive + theme switcher                                   */
-/* ---------------------------------------------------------------------- */
 const Navbar = ({ toggleSidebar, theme, setTheme }) => {
   return (
     <div
@@ -164,8 +166,12 @@ const Navbar = ({ toggleSidebar, theme, setTheme }) => {
           />
         )}
 
-        <BellOutlined style={{ fontSize: 20, cursor: "pointer", color: "var(--text-main)" }} />
-        <UserOutlined style={{ fontSize: 20, cursor: "pointer", color: "var(--text-main)" }} />
+        <BellOutlined
+          style={{ fontSize: 20, cursor: "pointer", color: "var(--text-main)" }}
+        />
+        <UserOutlined
+          style={{ fontSize: 20, cursor: "pointer", color: "var(--text-main)" }}
+        />
       </div>
     </div>
   );
@@ -211,10 +217,6 @@ const AdminLayout = () => {
         );
       case "co checkers":
         return <h1 style={pageStyle}>CO Checkers</h1>;
-      // case "co creators":
-      //   return <Hero />;
-      // case "settings":
-      //   return <h1 style={pageStyle}>Settings</h1>;
       default:
         return <h1>Admin dashboard</h1>;
     }
@@ -238,7 +240,11 @@ const AdminLayout = () => {
 
       {/* MAIN SECTION */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        <Navbar toggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} theme={theme} setTheme={setTheme} />
+        <Navbar
+          toggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+          theme={theme}
+          setTheme={setTheme}
+        />
 
         <div
           style={{
