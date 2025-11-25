@@ -1,12 +1,16 @@
-    // vite.config.js
-    import { defineConfig } from 'vite'
-    import tailwindcss from '@tailwindcss/vite'
-    import react from '@vitejs/plugin-react'
+// vite.config.js
+import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
+import react from '@vitejs/plugin-react'
 
-    export default defineConfig({
-      plugins: [
-        react(),
-        tailwindcss()
-        // other plugins if any
-      ],
-    })
+export default defineConfig({
+  plugins: [
+    react(),
+    tailwindcss()
+    // other plugins if any
+  ],
+  // Optional fix for jsPDF / jsPDF-AutoTable
+  optimizeDeps: {
+    include: ["jspdf", "jspdf-autotable"]
+  }
+})
